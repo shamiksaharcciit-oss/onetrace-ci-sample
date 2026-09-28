@@ -45,4 +45,4 @@ is correct.
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Copyright 2026 Shamik Saha. Licensed under Apache-2.0; see LICENSE.
