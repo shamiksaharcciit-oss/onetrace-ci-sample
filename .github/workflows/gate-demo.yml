@@ -1,0 +1,63 @@
+name: onetrace-ci gate demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "unchanged | corpus_change | deleted_artifact | instrument_bump | missing_approved_by"
+        required: true
+        default: "unchanged"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install onetrace (pinned by hash)
+        run: pip install --require-hashes -r requirements.lock
+
+      - name: Generate the candidate run
+        env:
+          SCENARIO: ${{ inputs.scenario }}
+        run: |
+          case "$SCENARIO" in
+            deleted_artifact|missing_approved_by) DEMO_SCENARIO=unchanged ;;
+            *) DEMO_SCENARIO="$SCENARIO" ;;
+          esac
+          python demo.py runs/candidate candidate-run "$DEMO_SCENARIO"
+          if [ "$SCENARIO" = "deleted_artifact" ]; then
+            rm -f runs/candidate/artifacts/02-answer/answer.json
+          fi
+
+      - name: Write the plan
+        env:
+          SCENARIO: ${{ inputs.scenario }}
+        run: |
+          if [ "$SCENARIO" = "missing_approved_by" ]; then
+            printf 'format: onetrace-ci-plan/0.1\n' > onetrace-plan.yaml
+          else
+            printf 'format: onetrace-ci-plan/0.1\napproved_by: sample-repo-maintainer\n' > onetrace-plan.yaml
+          fi
+          cat onetrace-plan.yaml
+
+      - name: Run the gate
+        id: gate
+        uses: shamiksaharcciit-oss/onetrace-ci@main
+        with:
+          run: runs/candidate
+          baseline: runs/baseline
+          plan: onetrace-plan.yaml
+          out: gate-out
+          review-exit: "2"
+
+      - name: Show the verdict
+        if: always()
+        run: cat gate-out/summary.md
