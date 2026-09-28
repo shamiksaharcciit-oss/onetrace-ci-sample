@@ -50,7 +50,8 @@ jobs:
 
       - name: Run the gate
         id: gate
-        uses: shamiksaharcciit-oss/onetrace-ci@main
+        # Pinned to one onetrace-ci commit, so this demo cannot change underneath its readers.
+        uses: shamiksaharcciit-oss/onetrace-ci@907180142e6be2eb74b4766f0df49813ac2cf61a
         with:
           run: runs/candidate
           baseline: runs/baseline
