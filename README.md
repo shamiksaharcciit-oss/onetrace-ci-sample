@@ -11,6 +11,8 @@ it against that baseline.
 - `runs/baseline/` — a committed, real `onetrace` run (scenario `unchanged`), already verified.
 - `.github/workflows/gate-demo.yml` — `workflow_dispatch`, parameterized by `scenario`.
 - `requirements.lock` — pins `onetrace`/`onetrace-verify` by hash, same as `onetrace-ci` itself.
+- `answering/`, `tests/`, `ci/` and `.github/workflows/discover-to-gate.yml` — the whole path, from
+  discovery to a passing gate (below).
 
 ## Scenarios
 
@@ -36,6 +38,23 @@ cat gate-out/summary.md
 `deleted_artifact` and `missing_approved_by` both generate the `unchanged` run underneath and then
 alter the artifact or the plan, since the scenario they demonstrate is about the gate's own checks,
 not about `demo.py`'s pipeline logic.
+
+## The whole path: from discovery to a passing gate
+
+`answering/` is the same `retrieve` → `answer` pipeline, not yet instrumented, with a fixture test
+in `tests/`. `.github/workflows/discover-to-gate.yml` runs the whole path on Python 3.10, 3.11 and
+3.12:
+
+1. `onetrace-ci discover` runs the fixture test, unchanged, and drafts a plan in which every field
+   that carries meaning is a `DECIDE:` question.
+2. `ci/decide.py` answers those questions from `ci/answers.json`. In a real project a person does
+   this; here the answers are committed, so the path can run in CI. The stages stay as discovery
+   drafted them, and a question left open is refused.
+3. `onetrace-ci instrument` turns the plan into a patch, which is applied.
+4. The patched pipeline runs once, and that run is proposed as the baseline. It runs again, and
+   the gate compares the second run with the baseline: PASS.
+
+onetrace-ci is checked out at one commit and installed from that commit's hash-pinned lock.
 
 ## What this does not claim
 

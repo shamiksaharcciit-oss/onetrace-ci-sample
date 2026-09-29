@@ -4,3 +4,10 @@ onetrace-plan.yaml
 __pycache__/
 *.pyc
 .venv/
+*.egg-info/
+discovered/
+instrument.patch
+runs/first/
+runs/second/
+runs/ci-baseline/
+.onetrace-ci/

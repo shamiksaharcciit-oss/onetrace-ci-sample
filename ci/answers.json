@@ -1,0 +1,28 @@
+{
+  "approved_by": "sample-repo-maintainer",
+  "approved_boundaries": [],
+  "ci": {
+    "install": "pip install --require-hashes -r requirements.lock && pip install --no-deps -e .",
+    "run": "python -c \"from answering.main import run; print(run())\"",
+    "baseline": "runs/ci-baseline"
+  },
+  "require_declared": false,
+  "sign": "none",
+  "anchor": "none",
+  "trust": null,
+  "stages": {
+    "retrieve": {
+      "instrument": {"name": "word-overlap", "package": "onetrace-ci-sample-answering", "kind": "retriever"},
+      "files": ["data/question.txt", "data/corpus.json"],
+      "trust": "operator-authored",
+      "rederivable": "true",
+      "rederivable_note": null,
+      "config": null
+    },
+    "answer": {
+      "instrument": {"name": "extractive", "package": "onetrace-ci-sample-answering", "kind": "answerer"},
+      "rederivable": "true",
+      "rederivable_note": null
+    }
+  }
+}
