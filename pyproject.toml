@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+# The answering pipeline is a package, so each stage's instrument version can be
+# read from its installed metadata instead of being written into the code.
+[project]
+name = "onetrace-ci-sample-answering"
+version = "1.0.0"
+description = "The answering pipeline used by the instrumented scenario of onetrace-ci-sample."
+requires-python = ">=3.10"
+license = "Apache-2.0"
+
+[tool.setuptools.packages.find]
+include = ["answering*"]

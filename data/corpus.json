@@ -1,0 +1,14 @@
+[
+ {
+  "id": "p1",
+  "text": "The warranty covers manufacturing defects for twelve months."
+ },
+ {
+  "id": "p2",
+  "text": "Shipping delays are handled by the logistics partner."
+ },
+ {
+  "id": "p3",
+  "text": "Returns are accepted within thirty days of delivery."
+ }
+]

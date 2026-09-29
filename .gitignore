@@ -4,3 +4,5 @@ onetrace-plan.yaml
 __pycache__/
 *.pyc
 .venv/
+runs/instrumented/
+*.egg-info/
