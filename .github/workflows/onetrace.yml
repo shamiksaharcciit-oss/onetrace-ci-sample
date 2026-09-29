@@ -27,7 +27,7 @@ jobs:
         run: |
           python -c "from answering.main import run; print(run())"
       - name: onetrace-ci gate
-        uses: shamiksaharcciit-oss/onetrace-ci@72abb90751149bd990e2c89c21954220e0fd5a53
+        uses: shamiksaharcciit-oss/onetrace-ci@000728365a17953fa4ac9a044f9d41a4d24a14f1
         with:
           run: "runs/instrumented/onetrace-ci-candidate"
           baseline: "runs/instrumented-baseline"

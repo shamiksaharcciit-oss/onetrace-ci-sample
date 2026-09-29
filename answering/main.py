@@ -5,7 +5,7 @@ from answering.answer import answer
 from answering.retrieve import retrieve
 
 
-# onetrace-ci instrument: generated from the plan (sha256:f565512d6dfa8a77).
+# onetrace-ci instrument: generated from the plan (sha256:a7d96dba74fbf659).
 # Change the plan and run `onetrace-ci instrument` again, rather than editing this by hand.
 import hashlib as _onetrace_hashlib
 import importlib.metadata as _onetrace_metadata
