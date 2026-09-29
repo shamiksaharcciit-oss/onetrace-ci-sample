@@ -1,0 +1,22 @@
+# The plan for the instrumented scenario. A person writes and approves it;
+# `onetrace-ci instrument` turns it into a patch.
+format: onetrace-ci-plan/0.1
+approved_by: sample-repo-maintainer
+entry: answering.main:run
+run_dir: runs/instrumented/{run_id}
+stages:
+  - name: retrieve
+    function: answering.retrieve:retrieve
+    instrument: {name: word-overlap, package: onetrace-ci-sample-answering, kind: retriever}
+    files: [data/question.txt, data/corpus.json]
+    trust: operator-authored
+    rederivable: "true"
+  - name: answer
+    function: answering.answer:answer
+    instrument: {name: extractive, package: onetrace-ci-sample-answering, kind: answerer}
+    rederivable: "true"
+approved_boundaries: []
+ci:
+  install: pip install --require-hashes -r requirements.lock && pip install --no-deps -e .
+  run: python -c "from answering.main import run; print(run())"
+  baseline: runs/instrumented-baseline
