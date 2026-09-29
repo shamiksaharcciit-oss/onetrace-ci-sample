@@ -37,6 +37,31 @@ cat gate-out/summary.md
 alter the artifact or the plan, since the scenario they demonstrate is about the gate's own checks,
 not about `demo.py`'s pipeline logic.
 
+## The instrumented scenario: from a plan to a passing gate
+
+The `answering/` pipeline shows `onetrace-ci instrument` end to end. Each step is its own commit,
+so the history reads as the walkthrough:
+
+1. **An un-instrumented pipeline.** `answering/` (retrieve, then answer), with a fixture question
+   and corpus in `data/`, and no onetrace calls at all. It is a small package (`pyproject.toml`),
+   so each stage's instrument version is read from its installed metadata.
+2. **The plan.** `onetrace-instrument-plan.yaml`: the entry function, the stages in order, the
+   files the first stage reads and how far they are trusted, whether each stage can be
+   re-derived, the approved boundaries, and how CI installs and runs the pipeline.
+3. **The patch.** `instrument.patch`, exactly as
+   `onetrace-ci instrument --plan onetrace-instrument-plan.yaml --repo . --out instrument.patch`
+   wrote it, so it can be reviewed before it is applied.
+4. **The patch, applied.** `git apply instrument.patch` changes `answering/main.py` only (one
+   `Recorder` per run, each stage recorded) and adds `.github/workflows/onetrace.yml`.
+5. **The baseline.** One run of the instrumented pipeline, proposed with
+   `onetrace-ci baseline propose` and committed as `runs/instrumented-baseline/`.
+
+From then on, every push runs `.github/workflows/onetrace.yml`: it installs and runs the pipeline,
+then runs the `onetrace-ci gate` against the committed baseline. Unchanged, it passes; change the
+corpus and it asks for review at `retrieve`.
+
+**The patch records what the plan names; it does not find stages the plan didn't list.**
+
 ## What this does not claim
 
 Same as `onetrace-ci` itself: the gate proves the candidate run's own records are internally
